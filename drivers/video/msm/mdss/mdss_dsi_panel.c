@@ -26,6 +26,7 @@
 #include <linux/mfd/lm3533.h>
 
 #include "mdss_dsi.h"
+#include "mdss_livedisplay.h"
 
 #define DT_CMD_HDR 6
 
