@@ -40,7 +40,7 @@ echo "                    "
 echo "                                        Compiling RaZorReborn kernel                    "
 echo "                    "
 echo -e "**********************************************************************************************"
-make ferrari_debug_defconfig
+make ferrari_razor_defconfig
 make -j4
 if ! [ -a $KERN_IMG ];
 then
