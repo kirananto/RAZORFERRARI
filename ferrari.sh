@@ -77,7 +77,7 @@ cp $KERNEL_DIR/arch/arm64/boot/dt.img  $MODULES_DIR/../FerrariOutput/tools
 mv $MODULES_DIR/../FerrariOutput/tools/Image $MODULES_DIR/../FerrariOutput/tools/zImage
 cp $MODULES_DIR/* $MODULES_DIR/../FerrariOutput/system/lib/modules/
 cd /home/kiran/Downloads/RaZoRReborn/RaZORBUILDOUTPUT/FerrariOutput
-zipfile="RRV1.4FERRARI-$(date +"%Y-%m-%d(%I.%M%p)").zip"
+zipfile="RRV1.2FERRARI-$(date +"%Y-%m-%d(%I.%M%p)").zip"
 zip -r $zipfile system tools META-INF -x *kernel/.gitignore*
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
