@@ -74,7 +74,6 @@ compile_kernel
 esac
 cp $KERNEL_DIR/arch/arm64/boot/Image  $MODULES_DIR/../FerrariOutput/tools
 cp $KERNEL_DIR/arch/arm64/boot/dt.img  $MODULES_DIR/../FerrariOutput/tools
-mv $MODULES_DIR/../FerrariOutput/tools/Image $MODULES_DIR/../FerrariOutput/tools/zImage
 cp $MODULES_DIR/* $MODULES_DIR/../FerrariOutput/system/lib/modules/
 cd /home/kiran/Downloads/RaZoRReborn/RaZORBUILDOUTPUT/FerrariOutput
 zipfile="RRV1.2FERRARI-$(date +"%Y-%m-%d(%I.%M%p)").zip"
