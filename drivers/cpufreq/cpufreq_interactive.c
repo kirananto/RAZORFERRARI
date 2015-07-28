@@ -75,7 +75,7 @@ static int migration_register_count;
 static struct mutex sched_lock;
 
 /* Target load.  Lower values result in higher CPU speeds. */
-#define DEFAULT_TARGET_LOAD 90
+#define DEFAULT_TARGET_LOAD 85
 static unsigned int default_target_loads[] = {DEFAULT_TARGET_LOAD};
 
 #define DEFAULT_TIMER_RATE (20 * USEC_PER_MSEC)
@@ -88,7 +88,7 @@ struct cpufreq_interactive_tunables {
 	/* Hi speed to bump to from lo speed when load burst (default max) */
 	unsigned int hispeed_freq;
 	/* Go to hi speed when CPU load at or above this value. */
-#define DEFAULT_GO_HISPEED_LOAD 99
+#define DEFAULT_GO_HISPEED_LOAD 90
 	unsigned long go_hispeed_load;
 	/* Target load. Lower values result in higher CPU speeds. */
 	spinlock_t target_loads_lock;
@@ -98,7 +98,7 @@ struct cpufreq_interactive_tunables {
 	 * The minimum amount of time to spend at a frequency before we can ramp
 	 * down.
 	 */
-#define DEFAULT_MIN_SAMPLE_TIME (80 * USEC_PER_MSEC)
+#define DEFAULT_MIN_SAMPLE_TIME (40 * USEC_PER_MSEC)
 	unsigned long min_sample_time;
 	/*
 	 * The sample rate of the timer used to increase frequency
@@ -147,8 +147,6 @@ struct cpufreq_interactive_tunables {
 static struct cpufreq_interactive_tunables *common_tunables;
 
 static struct attribute_group *get_sysfs_attr(void);
-
-#define DOWN_LOW_LOAD_THRESHOLD 5
 
 /* Round to starting jiffy of next evaluation window */
 static u64 round_to_nw_start(u64 jif,
@@ -403,7 +401,6 @@ static void cpufreq_interactive_timer(unsigned long data)
 	unsigned int index;
 	unsigned long flags;
 	bool boosted;
-	struct cpufreq_govinfo int_info;
 
 	if (!down_read_trylock(&pcpu->enable_sem))
 		return;
@@ -442,16 +439,9 @@ static void cpufreq_interactive_timer(unsigned long data)
 		do_div(cputime_speedadj, delta_time);
 	}
 
-	loadadjfreq = (unsigned int)cputime_speedadj * 100;
-
-	int_info.cpu = data;
-	int_info.load = loadadjfreq / pcpu->policy->max;
-	int_info.sampling_rate_us = tunables->timer_rate;
-	atomic_notifier_call_chain(&cpufreq_govinfo_notifier_list,
-					CPUFREQ_LOAD_CHANGE, &int_info);
-
 	spin_lock_irqsave(&pcpu->target_freq_lock, flags);
-	cpu_load = loadadjfreq / pcpu->policy->cur;
+	loadadjfreq = (unsigned int)cputime_speedadj * 100;
+	cpu_load = loadadjfreq / pcpu->target_freq;
 	boosted = tunables->boost_val || now < tunables->boostpulse_endtime;
 
 	if (cpu_load >= tunables->go_hispeed_load || boosted) {
@@ -463,8 +453,6 @@ static void cpufreq_interactive_timer(unsigned long data)
 			if (new_freq < tunables->hispeed_freq)
 				new_freq = tunables->hispeed_freq;
 		}
-	} else if (cpu_load <= DOWN_LOW_LOAD_THRESHOLD) {
-		new_freq = pcpu->policy->cpuinfo.min_freq;
 	} else {
 		new_freq = choose_freq(pcpu, loadadjfreq);
 	}

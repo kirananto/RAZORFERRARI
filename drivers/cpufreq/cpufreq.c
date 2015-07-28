@@ -80,7 +80,6 @@ static void handle_update(struct work_struct *work);
  */
 static BLOCKING_NOTIFIER_HEAD(cpufreq_policy_notifier_list);
 static struct srcu_notifier_head cpufreq_transition_notifier_list;
-struct atomic_notifier_head cpufreq_govinfo_notifier_list;
 
 static bool init_cpufreq_transition_notifier_list_called;
 static int __init init_cpufreq_transition_notifier_list(void)
@@ -90,15 +89,6 @@ static int __init init_cpufreq_transition_notifier_list(void)
 	return 0;
 }
 pure_initcall(init_cpufreq_transition_notifier_list);
-
-static bool init_cpufreq_govinfo_notifier_list_called;
-static int __init init_cpufreq_govinfo_notifier_list(void)
-{
-	ATOMIC_INIT_NOTIFIER_HEAD(&cpufreq_govinfo_notifier_list);
-	init_cpufreq_govinfo_notifier_list_called = true;
-	return 0;
-}
-pure_initcall(init_cpufreq_govinfo_notifier_list);
 
 static int off __read_mostly;
 static int cpufreq_disabled(void)
@@ -337,7 +327,7 @@ void cpufreq_notify_transition(struct cpufreq_policy *policy,
 }
 EXPORT_SYMBOL_GPL(cpufreq_notify_transition);
 
-/**
+/*
  * cpufreq_notify_utilization - notify CPU userspace about CPU utilization
  * change
  *
@@ -351,6 +341,8 @@ void cpufreq_notify_utilization(struct cpufreq_policy *policy,
 	if (policy)
 		policy->util = util;
 }
+
+
 /*********************************************************************
  *                          SYSFS INTERFACE                          *
  *********************************************************************/
@@ -1423,6 +1415,7 @@ static void cpufreq_out_of_sync(unsigned int cpu, unsigned int old_freq,
 	cpufreq_notify_transition(policy, &freqs, CPUFREQ_PRECHANGE);
 	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
 }
+
 /**
  * cpufreq_quick_get_util - get the CPU utilization from policy->util
  * @cpu: CPU number
@@ -1444,7 +1437,6 @@ unsigned int cpufreq_quick_get_util(unsigned int cpu)
 	return ret_util;
 }
 EXPORT_SYMBOL(cpufreq_quick_get_util);
-
 
 /**
  * cpufreq_quick_get - get the CPU frequency (in kHz) from policy->cur
@@ -1505,9 +1497,6 @@ static unsigned int __cpufreq_get(unsigned int cpu)
 	read_unlock_irqrestore(&cpufreq_driver_lock, flags);
 
 	ret_freq = cpufreq_driver->get(cpu);
-
-	if (!policy)
-		return ret_freq;
 
 	if (ret_freq && policy->cur &&
 		!(cpufreq_driver->flags & CPUFREQ_CONST_LOOPS)) {
@@ -1681,8 +1670,7 @@ int cpufreq_register_notifier(struct notifier_block *nb, unsigned int list)
 	if (cpufreq_disabled())
 		return -EINVAL;
 
-	WARN_ON(!init_cpufreq_transition_notifier_list_called ||
-		!init_cpufreq_govinfo_notifier_list_called);
+	WARN_ON(!init_cpufreq_transition_notifier_list_called);
 
 	switch (list) {
 	case CPUFREQ_TRANSITION_NOTIFIER:
@@ -1692,10 +1680,6 @@ int cpufreq_register_notifier(struct notifier_block *nb, unsigned int list)
 	case CPUFREQ_POLICY_NOTIFIER:
 		ret = blocking_notifier_chain_register(
 				&cpufreq_policy_notifier_list, nb);
-		break;
-	case CPUFREQ_GOVINFO_NOTIFIER:
-		ret = atomic_notifier_chain_register(
-				&cpufreq_govinfo_notifier_list, nb);
 		break;
 	default:
 		ret = -EINVAL;
@@ -1730,10 +1714,6 @@ int cpufreq_unregister_notifier(struct notifier_block *nb, unsigned int list)
 	case CPUFREQ_POLICY_NOTIFIER:
 		ret = blocking_notifier_chain_unregister(
 				&cpufreq_policy_notifier_list, nb);
-		break;
-	case CPUFREQ_GOVINFO_NOTIFIER:
-		ret = atomic_notifier_chain_unregister(
-				&cpufreq_govinfo_notifier_list, nb);
 		break;
 	default:
 		ret = -EINVAL;
@@ -2256,11 +2236,7 @@ int cpufreq_register_driver(struct cpufreq_driver *driver_data)
 	cpufreq_driver = driver_data;
 	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
 
-	register_hotcpu_notifier(&cpufreq_cpu_notifier);
-
-	get_online_cpus();
 	ret = subsys_interface_register(&cpufreq_interface);
-	put_online_cpus();
 	if (ret)
 		goto err_null_driver;
 
@@ -2283,13 +2259,13 @@ int cpufreq_register_driver(struct cpufreq_driver *driver_data)
 		}
 	}
 
+	register_hotcpu_notifier(&cpufreq_cpu_notifier);
 	pr_debug("driver %s up and running\n", driver_data->name);
 
 	return 0;
 err_if_unreg:
 	subsys_interface_unregister(&cpufreq_interface);
 err_null_driver:
-	unregister_hotcpu_notifier(&cpufreq_cpu_notifier);
 	write_lock_irqsave(&cpufreq_driver_lock, flags);
 	cpufreq_driver = NULL;
 	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
