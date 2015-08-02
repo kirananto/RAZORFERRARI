@@ -48,21 +48,7 @@ echo -e "$red Kernel Compilation failed! Fix the errors! $nocol"
 exit 1
 fi
 $DTBTOOL -2 -o $KERNEL_DIR/arch/arm64/boot/dt.img -s 2048 -p $KERNEL_DIR/scripts/dtc/ $KERNEL_DIR/arch/arm/boot/dts/
-strip_modules
 }
-
-
-strip_modules ()
-{
-echo "Copying modules"
-rm $MODULES_DIR/*
-find . -name '*.ko' -exec cp {} $MODULES_DIR/ \;
-cd $MODULES_DIR
-echo "Stripping modules for size"
-$STRIP --strip-unneeded *.ko
-cd $KERNEL_DIR
-}
-
 case $1 in
 clean)
 make ARCH=arm64 -j8 clean mrproper
@@ -72,12 +58,13 @@ rm -rf $KERNEL_DIR/arch/arm/boot/dt.img
 compile_kernel
 ;;
 esac
+rm $MODULES_DIR/../FerrariOutput/tools/Image
+rm $MODULES_DIR/../FerrariOutput/tools/dt.img
 cp $KERNEL_DIR/arch/arm64/boot/Image  $MODULES_DIR/../FerrariOutput/tools
 cp $KERNEL_DIR/arch/arm64/boot/dt.img  $MODULES_DIR/../FerrariOutput/tools
-cp $MODULES_DIR/* $MODULES_DIR/../FerrariOutput/system/lib/modules/
 cd /home/kiran/Downloads/RaZoRReborn/RaZORBUILDOUTPUT/FerrariOutput
 zipfile="RRV1.2FERRARI-$(date +"%Y-%m-%d(%I.%M%p)").zip"
-zip -r $zipfile system tools META-INF -x *kernel/.gitignore*
+zip -r $zipfile tools META-INF -x *kernel/.gitignore*
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "$yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
