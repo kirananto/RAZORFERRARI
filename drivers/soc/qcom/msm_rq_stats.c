@@ -52,7 +52,9 @@ struct cpu_load_data {
 };
 
 static DEFINE_PER_CPU(struct cpu_load_data, cpuload);
+
 #ifdef CONFIG_BRICKED_HOTPLUG 
+
 unsigned int get_rq_info(void)
 {
 	unsigned long flags = 0;
@@ -70,6 +72,7 @@ unsigned int get_rq_info(void)
 
 EXPORT_SYMBOL(get_rq_info);
 
+#endif
 
 static int update_average_load(unsigned int freq, unsigned int cpu)
 {
