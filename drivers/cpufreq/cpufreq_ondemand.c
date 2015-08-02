@@ -35,7 +35,7 @@ static struct od_ops od_ops;
 static struct cpufreq_governor cpufreq_gov_ondemand;
 #endif
 
-static unsigned int default_powersave_bias;
+static unsigned int default_powersave_bias=1;
 
 static void ondemand_powersave_bias_init_cpu(int cpu)
 {
