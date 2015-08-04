@@ -24,13 +24,13 @@ yellow='\033[0;33m'
 red='\033[0;31m'
 nocol='\033[0m'
 # Modify the following variable if you want to build
-export CROSS_COMPILE="/home/kiran/android/toolchains/aarch64-linux-android-4.9-LTS/bin/aarch64-linux-android-"
+export CROSS_COMPILE="/home/kiran/android/toolchains/aarch64-linux-android-6.0/bin/aarch64-linux-android-"
 export USE_CCACHE=1
 export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_BUILD_USER="Kiran.Anto"
 export KBUILD_BUILD_HOST="RaZor-Machine"
-STRIP="/home/kiran/android/toolchains/aarch64-linux-android-4.9-LTS/bin/aarch64-linux-android-strip"
+STRIP="/home/kiran/android/toolchains/aarch64-linux-android-6.0/bin/aarch64-linux-android-strip"
 MODULES_DIR=$KERNEL_DIR/../RaZORBUILDOUTPUT/Common
 
 compile_kernel ()
@@ -68,7 +68,7 @@ read zipfile
 echo $zipfile
 zip -r $zipfile tools META-INF -x *kernel/.gitignore*
 dropbox_uploader -p upload $MODULES_DIR/../FerrariOutput/$zipfile /
-dropbox_uploader share /$zipfile
+dropbox_uploader share /FERRARI/$zipfile
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "$yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
