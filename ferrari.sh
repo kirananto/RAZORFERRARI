@@ -24,13 +24,13 @@ yellow='\033[0;33m'
 red='\033[0;31m'
 nocol='\033[0m'
 # Modify the following variable if you want to build
-export CROSS_COMPILE="/home/kiran/android/toolchains/aarch64-linux-android-4.9-LTS/bin/aarch64-linux-android-"
+export CROSS_COMPILE="/media/kiran/cfa944e1-2a51-4fa1-9334-894a93e41cb9/Android-Development/Kernel/Toolchains/aarch64-linux-android-4.9-LTS/bin/aarch64-linux-android-"
 export USE_CCACHE=1
 export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_BUILD_USER="Kiran.Anto"
 export KBUILD_BUILD_HOST="RaZor-Machine"
-STRIP="/home/kiran/android/toolchains/aarch64-linux-android-4.9-LTS/bin/aarch64-linux-android-strip"
+STRIP="/media/kiran/cfa944e1-2a51-4fa1-9334-894a93e41cb9/Android-Development/Kernel/Toolchains/aarch64-linux-android-4.9-LTS/bin/aarch64-linux-android-strip"
 MODULES_DIR=$KERNEL_DIR/../RaZORBUILDOUTPUT/Common
 
 compile_kernel ()
@@ -62,7 +62,7 @@ rm $MODULES_DIR/../FerrariOutput/tools/Image
 rm $MODULES_DIR/../FerrariOutput/tools/dt.img
 cp $KERNEL_DIR/arch/arm64/boot/Image  $MODULES_DIR/../FerrariOutput/tools
 cp $KERNEL_DIR/arch/arm64/boot/dt.img  $MODULES_DIR/../FerrariOutput/tools
-cd /home/kiran/Downloads/RaZoRReborn/RaZORBUILDOUTPUT/FerrariOutput
+cd $MODULES_DIR/../FerrariOutput
 echo -n "Enter The Zip file Name : "
 read zipfile
 echo $zipfile
