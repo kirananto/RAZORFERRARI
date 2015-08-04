@@ -67,8 +67,8 @@ echo -n "Enter The Zip file Name : "
 read zipfile
 echo $zipfile
 zip -r $zipfile tools META-INF -x *kernel/.gitignore*
-dropbox_uploader -p upload $MODULES_DIR/../FerrariOutput/$zipfile /
-dropbox_uploader share /FERRARI/$zipfile
+dropbox_uploader -p upload $MODULES_DIR/../FerrariOutput/$zipfile /FERRARI
+dropbox_uploader share /$zipfile
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "$yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
