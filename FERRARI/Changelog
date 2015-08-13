@@ -1,1 +1,11 @@
+*Test Build
+
+	Add Driver for FiiO USB DAC
+	Updated Driver for LiveDisplay
+	Some SElinux Fixes
+	Adreno Idler Driver Added
+	QuickwakeUp driver added
+	Undervolted
+	devfreq: Use High Priority workqueue
+
 *Initial Release - RAZORREBORN v1.0
