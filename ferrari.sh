@@ -37,7 +37,7 @@ compile_kernel ()
 {
 echo -e "**********************************************************************************************"
 echo "                    "
-echo "                                        Compiling RaZorReborn kernel                    "
+echo "                                        Compiling RaZorReborn for Ferrari                   "
 echo "                    "
 echo -e "**********************************************************************************************"
 make ferrari_razor_defconfig
@@ -63,8 +63,7 @@ rm $MODULES_DIR/../FerrariOutput/tools/dt.img
 cp $KERNEL_DIR/arch/arm64/boot/Image  $MODULES_DIR/../FerrariOutput/tools
 cp $KERNEL_DIR/arch/arm64/boot/dt.img  $MODULES_DIR/../FerrariOutput/tools
 cd $MODULES_DIR/../FerrariOutput
-echo -n "Enter The Zip file Name : "
-read zipfile
+zipfile="RRV1.2FERRARI-$(date +"%Y-%m-%d(%I.%M%p)").zip"
 echo $zipfile
 zip -r $zipfile tools META-INF -x *kernel/.gitignore*
 dropbox_uploader -p upload $MODULES_DIR/../FerrariOutput/$zipfile /FERRARI/
