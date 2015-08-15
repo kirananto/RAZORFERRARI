@@ -222,6 +222,8 @@ struct cpufreq_driver {
 	unsigned int	(*get)	(unsigned int cpu);
 
 	/* optional */
+	unsigned int (*getavg)	(struct cpufreq_policy *policy,
+                            unsigned int cpu);
 	int	(*bios_limit)	(int cpu, unsigned int *limit);
 
 	int	(*exit)		(struct cpufreq_policy *policy);
@@ -396,6 +398,9 @@ int cpufreq_driver_target(struct cpufreq_policy *policy,
 int __cpufreq_driver_target(struct cpufreq_policy *policy,
 				   unsigned int target_freq,
 				   unsigned int relation);
+extern int __cpufreq_driver_getavg(struct cpufreq_policy *policy,
+                                   unsigned int cpu);
+
 int cpufreq_register_governor(struct cpufreq_governor *governor);
 void cpufreq_unregister_governor(struct cpufreq_governor *governor);
 
@@ -453,6 +458,23 @@ extern struct cpufreq_governor cpufreq_gov_blu_active;
 #elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_BIOSHOCK)
 extern struct cpufreq_governor cpufreq_gov_bioshock;
 #define CPUFREQ_DEFAULT_GOVERNOR        (&cpufreq_gov_bioshock)
+extern struct cpufreq_governor cpufreq_gov_smartmax;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_smartmax)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_BARRY_ALLEN)
+extern struct cpufreq_governor cpufreq_gov_barry_allen;
+#define CPUFREQ_DEFAULT_GOVERNOR	(&cpufreq_gov_barry_allen)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_DANCEDANCE)
+extern struct cpufreq_governor cpufreq_gov_dancedance;
+#define CPUFREQ_DEFAULT_GOVERNOR 	(&cpufreq_gov_DANCEDANCE)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_LIONHEART)
+extern struct cpufreq_governor cpufreq_gov_lionheart;
+#define CPUFREQ_DEFAULT_GOVERNOR 	(&cpufreq_gov_LIONHEART)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_INTELLIACTIVE)
+extern struct cpufreq_governor cpufreq_gov_intelliactive;
+#define CPUFREQ_DEFAULT_GOVERNOR        (&cpufreq_gov_intelliactive)
+#elif defined(CONFIG_CPU_FREQ_DEFAULT_GOV_PEGASUSQ)
+extern struct cpufreq_governor cpufreq_gov_pegasusq;
+#define CPUFREQ_DEFAULT_GOVERNOR        (&cpufreq_gov_pegasusq)
 #endif
 
 /*********************************************************************

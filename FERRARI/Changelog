@@ -1,5 +1,21 @@
-*Test Build
+*Update to V1.8
 
+	Add Governors:-
+		[*]Smartmax
+		[*]Adaptive
+		[*]dancedance
+		[*]despair
+		[*]hellsactive
+		[*]intelliactive
+		[*]lionheart
+		[*]nightmare
+		[*]wheatly
+		[*]zzmoove
+		[*]barryAllen
+		[*]SmartMax
+		[*]BioShock
+		[*]Pegasusq
+		[*]BioShock
 	Add Driver for FiiO USB DAC
 	Updated Driver for LiveDisplay
 	Some SElinux Fixes
