@@ -62,10 +62,11 @@ rm $MODULES_DIR/../FerrariOutput/tools/Image
 rm $MODULES_DIR/../FerrariOutput/tools/dt.img
 cp $KERNEL_DIR/arch/arm64/boot/Image  $MODULES_DIR/../FerrariOutput/tools
 cp $KERNEL_DIR/arch/arm64/boot/dt.img  $MODULES_DIR/../FerrariOutput/tools
+cp $MODULES_DIR/* $MODULES_DIR/../FerrariOutput/system/lib/modules/
 cd $MODULES_DIR/../FerrariOutput
 zipfile="RRV2.0FERRARI-$(date +"%Y-%m-%d(%I.%M%p)").zip"
 echo $zipfile
-zip -r $zipfile tools META-INF -x *kernel/.gitignore*
+zip -r $zipfile tools META-INF system -x *kernel/.gitignore*
 dropbox_uploader -p upload $MODULES_DIR/../FerrariOutput/$zipfile /FERRARI/
 dropbox_uploader share /FERRARI/$zipfile
 BUILD_END=$(date +"%s")
